@@ -2,6 +2,8 @@
 , aeson
 , base
 , bytestring
+, http-client
+, http-client-tls
 , lens
 , lens-aeson
 , text
@@ -15,6 +17,8 @@ mkDerivation {
         aeson
         base
         bytestring
+        http-client
+        http-client-tls
         lens
         lens-aeson
         text

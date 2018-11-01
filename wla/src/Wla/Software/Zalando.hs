@@ -13,7 +13,6 @@ module Wla.Software.Zalando
     Config (..)
   , requestWishList
   , requestWishListPage
-  , wishListPageRequest
 
     -- * Decoding
   , DecodeError (..)
@@ -24,24 +23,24 @@ module Wla.Software.Zalando
   ) where
 
 import Control.Category ((>>>))
-import Control.Exception (Exception, throwIO)
-import Control.Lens ((^.), (^?), (%~), _Left, ix, to)
+import Control.Exception (Exception)
+import Control.Lens ((^.), (^?), (%~), _Left, ix)
 import Control.Monad ((>=>))
-import Control.Monad.IO.Class (MonadIO, liftIO)
-import Data.Semigroup ((<>))
+import Control.Monad.Free.Class (MonadFree)
 
 import qualified Data.Aeson as Ae
 import qualified Data.Aeson.Lens as Ae
 import qualified Data.ByteString as Bs
 import qualified Data.ByteString.Lazy as Bs.Lazy
 import qualified Data.HashMap.Lazy as HashMap
-import qualified Data.Text.Encoding.Error as Text
 import qualified Data.Text.Lazy as Text.Lazy
 import qualified Data.Text.Lazy.Encoding as Text.Lazy
-import qualified Network.HTTP.Client as Http
 
 import Data.Secret (Secret, _Secret)
+import Wla.Crawl (Crawl)
 import Wla.WishList (WishList, WishListItem (..))
+
+import qualified Wla.Crawl as Crawl
 
 --------------------------------------------------------------------------------
 -- Requesting
@@ -54,33 +53,17 @@ data Config =
     , configToken :: Secret Bs.ByteString }
   deriving stock (Eq, Show)
 
-requestWishList :: MonadIO m => Http.Manager -> Config -> m WishList
-requestWishList http config = do
-  wishListPage <- requestWishListPage http config
-  either (liftIO . throwIO) pure $
-    decodeWishList wishListPage
+requestWishList :: MonadFree Crawl m => Config -> m WishList
+requestWishList config = do
+  wishListPage <- requestWishListPage config
+  Crawl.crashE $ decodeWishList wishListPage
 
-requestWishListPage :: MonadIO m => Http.Manager -> Config -> m Text.Lazy.Text
-requestWishListPage http config = do
-  response <- liftIO $ Http.httpLbs (wishListPageRequest config) http
-  pure . Text.Lazy.decodeUtf8With Text.lenientDecode $
-           Http.responseBody response
-
--- |
--- HTTP request for Zalando wish list page.
-wishListPageRequest :: Config -> Http.Request
-wishListPageRequest config =
-  Http.defaultRequest
-    { Http.host   = configHost config
-    , Http.port   = 443
-    , Http.secure = True
-    , Http.path   = "/wishlist"
-    , Http.requestHeaders = [("Cookie", cookie)] }
-  where
+requestWishListPage :: MonadFree Crawl m => Config -> m Text.Lazy.Text
+requestWishListPage config = do
   -- The cookies are nicely documented in the privacy policy. It seems we only
   -- need one to request the wish list page.
-  cookie :: Bs.ByteString
-  cookie = configToken config ^. _Secret . to ("zac=" <>)
+  Crawl.appendCookie "zac" (configToken config ^. _Secret)
+  Crawl.requestPage (configHost config) 443 "/wishlist"
 
 --------------------------------------------------------------------------------
 -- Decoding

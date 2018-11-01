@@ -10,6 +10,8 @@ library
 
     exposed-modules:
         Data.Secret,
+        Wla.Crawl,
+        Wla.Crawl.Http,
         Wla.Software.Zalando,
         Wla.WishList
 
@@ -24,7 +26,9 @@ library
     default-extensions:
         ApplicativeDo,
         DeriveAnyClass,
+        DeriveFunctor,
         DerivingStrategies,
+        FlexibleContexts,
         OverloadedStrings,
         StrictData
 
@@ -32,10 +36,13 @@ library
         aeson,
         base,
         bytestring,
+        free,
         http-client,
         lens,
         lens-aeson,
+        mtl,
         text,
+        transformers,
         unordered-containers
 
 executable wla
@@ -61,5 +68,6 @@ executable wla
     build-depends:
         base,
         bytestring,
+        free,
         http-client-tls,
         wla

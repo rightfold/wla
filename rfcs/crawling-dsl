@@ -1,7 +1,0 @@
-Add a free monad DSL for writing crawlers. This has advantages over directly
-using http-client. Interpreter transformers can be written that add various
-aspects of crawling to the base interpreter of the DSL. Such aspects include
-waiting between requests (to avoid rate limits), keeping track of cookies, and
-logging requests.
-
-Rewrite the existing crawlers to use the new DSL.

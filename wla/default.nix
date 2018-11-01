@@ -2,11 +2,14 @@
 , aeson
 , base
 , bytestring
+, free
 , http-client
 , http-client-tls
 , lens
 , lens-aeson
+, mtl
 , text
+, transformers
 , unordered-containers }:
 mkDerivation {
     pname = "wla";
@@ -17,11 +20,14 @@ mkDerivation {
         aeson
         base
         bytestring
+        free
         http-client
         http-client-tls
         lens
         lens-aeson
+        mtl
         text
+        transformers
         unordered-containers
     ];
 }

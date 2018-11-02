@@ -9,8 +9,10 @@ import qualified Network.HTTP.Client.TLS as Http.Tls
 import qualified Data.ByteString as Bs
 
 import Data.Secret (Secret (..))
-import Wla.Crawl.Http (interpret, runT)
 import Wla.Software.Zalando (Config (..), requestWishList)
+
+import qualified Wla.Crawl.Dyke as Crawl.Dyke
+import qualified Wla.Crawl.Http as Crawl.Http
 
 main :: IO ()
 main = do
@@ -20,6 +22,8 @@ main = do
   http <- Http.Tls.newTlsManager
 
   let config = Config "zalando.nl" token
-  wishList <- runT http $ foldFree interpret (requestWishList config)
+  wishList <- Crawl.Http.runT http $
+    foldFree (Crawl.Dyke.interpret Crawl.Http.interpret) $
+      requestWishList config
 
   print wishList

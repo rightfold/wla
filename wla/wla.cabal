@@ -11,6 +11,7 @@ library
     exposed-modules:
         Data.Secret,
         Wla.Crawl,
+        Wla.Crawl.Dyke,
         Wla.Crawl.Http,
         Wla.Software.Zalando,
         Wla.WishList

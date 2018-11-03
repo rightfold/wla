@@ -71,8 +71,9 @@ requestWishListPage config = do
 -- |
 -- Something went wrong while decoding.
 data DecodeError
-  = CannotFindData         -- ^ Cannot find the wish list data.
-  | JsonDecodeError String -- ^ Cannot decode the wish list data.
+  = CannotFindData        -- ^ Cannot find the wish list data.
+  | JsonParseError String -- ^ Cannot parse the JSON data.
+  | JsonDecodeError       -- ^ Cannot decode the parsed JSON data.
   deriving stock (Eq, Show)
   deriving anyclass (Exception)
 
@@ -110,12 +111,12 @@ decodeWishListPage htmlPage =
 -- format. Returns the wish list extracted from the wish list data.
 decodeWishListData :: Bs.Lazy.ByteString -> Either DecodeError WishList
 decodeWishListData = f . Ae.eitherDecode' >=> decodeWishListData'
-  where f = _Left %~ JsonDecodeError
+  where f = _Left %~ JsonParseError
 
 -- |
 -- Like 'decodeWishListData', but with JSON already parsed.
 decodeWishListData' :: Ae.Value -> Either DecodeError WishList
-decodeWishListData' = decodeRoot >>> maybe (Left (JsonDecodeError "")) Right
+decodeWishListData' = decodeRoot >>> maybe (Left JsonDecodeError) Right
   where
   decodeRoot :: Ae.Value -> Maybe WishList
   decodeRoot raw = do

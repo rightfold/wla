@@ -1,6 +1,7 @@
 { mkDerivation
 , aeson
 , base
+, blaze-html
 , bytestring
 , contravariant
 , free
@@ -21,6 +22,7 @@ mkDerivation {
     buildDepends = [
         aeson
         base
+        blaze-html
         bytestring
         contravariant
         free

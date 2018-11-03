@@ -5,13 +5,16 @@ module Main
 import Control.Monad.Free (foldFree)
 import Control.Monad.IO.Class (liftIO)
 import System.Environment (getArgs)
+import Text.Blaze.Html.Renderer.Utf8 (renderHtml)
 
 import qualified Network.HTTP.Client.TLS as Http.Tls
 import qualified Data.ByteString as Bs
+import qualified Data.ByteString.Lazy as Bs.Lazy
 
 import Control.Logger (Logger (..))
 import Data.Secret (Secret (..))
 import Wla.Software.Zalando (Config (..), requestWishList)
+import Wla.WishList.Html (renderWishList)
 
 import qualified Wla.Crawl.Http as Crawl.Http
 import qualified Wla.Crawl.Log as Crawl.Log
@@ -31,4 +34,4 @@ main = do
                         Crawl.Http.interpret in
     foldFree interpret $ requestWishList config
 
-  print wishList
+  Bs.Lazy.putStr (renderHtml (renderWishList wishList))

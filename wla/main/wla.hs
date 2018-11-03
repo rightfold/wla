@@ -3,16 +3,19 @@ module Main
   ) where
 
 import Control.Monad.Free (foldFree)
+import Control.Monad.IO.Class (liftIO)
 import System.Environment (getArgs)
 
 import qualified Network.HTTP.Client.TLS as Http.Tls
 import qualified Data.ByteString as Bs
 
+import Control.Logger (Logger (..))
 import Data.Secret (Secret (..))
 import Wla.Software.Zalando (Config (..), requestWishList)
 
 import qualified Wla.Crawl.Dyke as Crawl.Dyke
 import qualified Wla.Crawl.Http as Crawl.Http
+import qualified Wla.Crawl.Log as Crawl.Log
 
 main :: IO ()
 main = do
@@ -23,7 +26,9 @@ main = do
 
   let config = Config "zalando.nl" token
   wishList <- Crawl.Http.runT http $
-    foldFree (Crawl.Dyke.interpret Crawl.Http.interpret) $
-      requestWishList config
+    let interpret = Crawl.Log.interpret (Logger (liftIO . print)) $
+                      Crawl.Dyke.interpret $
+                        Crawl.Http.interpret in
+    foldFree interpret $ requestWishList config
 
   print wishList

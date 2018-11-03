@@ -2,12 +2,14 @@
 , aeson
 , base
 , bytestring
+, contravariant
 , free
 , http-client
 , http-client-tls
 , lens
 , lens-aeson
 , mtl
+, semigroupoids
 , text
 , transformers
 , unordered-containers }:
@@ -20,12 +22,14 @@ mkDerivation {
         aeson
         base
         bytestring
+        contravariant
         free
         http-client
         http-client-tls
         lens
         lens-aeson
         mtl
+        semigroupoids
         text
         transformers
         unordered-containers

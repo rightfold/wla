@@ -9,10 +9,12 @@ library
         src
 
     exposed-modules:
+        Control.Logger,
         Data.Secret,
         Wla.Crawl,
         Wla.Crawl.Dyke,
         Wla.Crawl.Http,
+        Wla.Crawl.Log,
         Wla.Software.Zalando,
         Wla.WishList
 
@@ -37,11 +39,13 @@ library
         aeson,
         base,
         bytestring,
+        contravariant,
         free,
         http-client,
         lens,
         lens-aeson,
         mtl,
+        semigroupoids,
         text,
         transformers,
         unordered-containers

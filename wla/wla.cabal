@@ -12,9 +12,9 @@ library
         Control.Logger,
         Data.Secret,
         Wla.Crawl,
-        Wla.Crawl.Dyke,
         Wla.Crawl.Http,
         Wla.Crawl.Log,
+        Wla.Crawl.UpstreamDyke,
         Wla.Software.Zalando,
         Wla.WishList
 

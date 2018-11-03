@@ -1,6 +1,6 @@
 -- |
--- Flood protection. Crawlers should not make requests too rapidly.
-module Wla.Crawl.Dyke
+-- Upstream flood protection. Crawlers should not make requests too rapidly.
+module Wla.Crawl.UpstreamDyke
   ( interpret
   , delay
   ) where

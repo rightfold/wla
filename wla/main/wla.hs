@@ -13,9 +13,9 @@ import Control.Logger (Logger (..))
 import Data.Secret (Secret (..))
 import Wla.Software.Zalando (Config (..), requestWishList)
 
-import qualified Wla.Crawl.Dyke as Crawl.Dyke
 import qualified Wla.Crawl.Http as Crawl.Http
 import qualified Wla.Crawl.Log as Crawl.Log
+import qualified Wla.Crawl.UpstreamDyke as Crawl.UpstreamDyke
 
 main :: IO ()
 main = do
@@ -27,7 +27,7 @@ main = do
   let config = Config "zalando.nl" token
   wishList <- Crawl.Http.runT http $
     let interpret = Crawl.Log.interpret (Logger (liftIO . print)) $
-                      Crawl.Dyke.interpret $
+                      Crawl.UpstreamDyke.interpret $
                         Crawl.Http.interpret in
     foldFree interpret $ requestWishList config
 

@@ -24,6 +24,8 @@ renderWishListItem I18n{..} item =
   E.article $ do
     E.h1 . H.text $ fromMaybe i18nWishListItemNamePlaceholder (itemName item)
     E.img ! A.src (H.toValue (fromMaybe placeholderImageUrl (itemImageUrl item)))
+    E.button . H.text $ i18nWishListItemViewInWebshop
+    E.button . H.text $ i18nWishListItemShare
 
 placeholderImageUrl :: Text
 placeholderImageUrl = ""

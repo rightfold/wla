@@ -19,6 +19,7 @@ import Wla.WishList.Html (renderWishList)
 import qualified Wla.Crawl.Http as Crawl.Http
 import qualified Wla.Crawl.Log as Crawl.Log
 import qualified Wla.Crawl.UpstreamDyke as Crawl.UpstreamDyke
+import qualified Wla.I18n as I18n
 
 main :: IO ()
 main = do
@@ -34,4 +35,4 @@ main = do
                         Crawl.Http.interpret in
     foldFree interpret $ requestWishList config
 
-  Bs.Lazy.putStr (renderHtml (renderWishList wishList))
+  Bs.Lazy.putStr (renderHtml (renderWishList I18n.nlNl wishList))

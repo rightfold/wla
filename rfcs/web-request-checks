@@ -1,0 +1,3 @@
+The web application should verify that the request method and the request URI
+are GET and / respectively. This ensures that the visitor does not rely on any
+combination working, and allows for adding new endpoints later.

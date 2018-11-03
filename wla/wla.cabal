@@ -17,6 +17,7 @@ library
         Wla.Crawl.UpstreamDyke,
         Wla.I18n,
         Wla.Software.Zalando,
+        Wla.Web,
         Wla.WishList,
         Wla.WishList.Html
 
@@ -46,13 +47,15 @@ library
         contravariant,
         free,
         http-client,
+        http-types,
         lens,
         lens-aeson,
         mtl,
         semigroupoids,
         text,
         transformers,
-        unordered-containers
+        unordered-containers,
+        wai
 
 executable wla
     hs-source-dirs:
@@ -76,8 +79,8 @@ executable wla
 
     build-depends:
         base,
-        blaze-html,
         bytestring,
         free,
         http-client-tls,
+        warp,
         wla

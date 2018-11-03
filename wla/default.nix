@@ -7,13 +7,16 @@
 , free
 , http-client
 , http-client-tls
+, http-types
 , lens
 , lens-aeson
 , mtl
 , semigroupoids
 , text
 , transformers
-, unordered-containers }:
+, unordered-containers
+, wai
+, warp }:
 mkDerivation {
     pname = "wla";
     version = "0.0.0.0";
@@ -28,6 +31,7 @@ mkDerivation {
         free
         http-client
         http-client-tls
+        http-types
         lens
         lens-aeson
         mtl
@@ -35,5 +39,7 @@ mkDerivation {
         text
         transformers
         unordered-containers
+        wai
+        warp
     ];
 }

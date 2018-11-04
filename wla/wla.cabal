@@ -11,6 +11,7 @@ library
     exposed-modules:
         Control.Logger,
         Data.Secret,
+        Network.Wai.Cont,
         Wla.Config,
         Wla.Crawl,
         Wla.Crawl.Http,
@@ -84,6 +85,5 @@ executable wla
         free,
         http-client,
         http-client-tls,
-        transformers,
         warp,
         wla

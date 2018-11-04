@@ -11,6 +11,7 @@ library
     exposed-modules:
         Control.Logger,
         Data.Secret,
+        Wla.Config,
         Wla.Crawl,
         Wla.Crawl.Http,
         Wla.Crawl.Log,
@@ -51,6 +52,7 @@ library
         lens,
         lens-aeson,
         mtl,
+        scientific,
         semigroupoids,
         text,
         transformers,

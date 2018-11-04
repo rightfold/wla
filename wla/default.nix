@@ -11,6 +11,7 @@
 , lens
 , lens-aeson
 , mtl
+, scientific
 , semigroupoids
 , text
 , transformers
@@ -35,6 +36,7 @@ mkDerivation {
         lens
         lens-aeson
         mtl
+        scientific
         semigroupoids
         text
         transformers

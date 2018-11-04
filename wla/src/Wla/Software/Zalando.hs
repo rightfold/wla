@@ -11,6 +11,7 @@
 module Wla.Software.Zalando
   ( -- * Requesting
     Config (..)
+  , decodeConfig
   , requestWishList
   , requestWishListPage
 
@@ -24,7 +25,7 @@ module Wla.Software.Zalando
 
 import Control.Category ((>>>))
 import Control.Exception (Exception)
-import Control.Lens ((^.), (^?), (%~), _Left, ix)
+import Control.Lens ((^.), (^?), (%~), _Left, from, ix, to)
 import Control.Monad ((>=>))
 import Control.Monad.Free.Class (MonadFree)
 
@@ -33,6 +34,7 @@ import qualified Data.Aeson.Lens as Ae
 import qualified Data.ByteString as Bs
 import qualified Data.ByteString.Lazy as Bs.Lazy
 import qualified Data.HashMap.Lazy as HashMap
+import qualified Data.Text.Encoding as Text
 import qualified Data.Text.Lazy as Text.Lazy
 import qualified Data.Text.Lazy.Encoding as Text.Lazy
 
@@ -52,6 +54,13 @@ data Config =
     { configHost  :: Bs.ByteString
     , configToken :: Secret Bs.ByteString }
   deriving stock (Eq, Show)
+
+decodeConfig :: Ae.Object -> Maybe Config
+decodeConfig root = do
+  host  <- root ^? ix "host" . Ae._String . to Text.encodeUtf8
+  token <- root ^? ix "token" . Ae._String . to Text.encodeUtf8 . from _Secret
+  pure Config { configHost  = host
+              , configToken = token }
 
 requestWishList :: MonadFree Crawl m => Config -> m WishList
 requestWishList config = do

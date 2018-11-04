@@ -81,8 +81,8 @@ executable wla
 
     build-depends:
         base,
-        bytestring,
         free,
+        http-client,
         http-client-tls,
         warp,
         wla

@@ -1,0 +1,10 @@
+There should be two configuration files: the configuration file and the
+crawlers file.
+
+The configuration file contains settings such as the address to listen on.
+
+The crawlers file defines all crawlers. This file contains tokens so it should
+only be readable by the user that needs to be able to read it.
+
+Sending SIGHUP to the daemon should reload the crawlers file and run all
+crawlers.

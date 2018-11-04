@@ -84,5 +84,6 @@ executable wla
         free,
         http-client,
         http-client-tls,
+        transformers,
         warp,
         wla

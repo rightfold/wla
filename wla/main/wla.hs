@@ -4,6 +4,7 @@ module Main
 
 import Control.Monad.Free (foldFree)
 import Control.Monad.IO.Class (liftIO)
+import Control.Monad.Trans.Cont (runContT)
 import Data.Foldable (fold)
 import Data.Function ((&))
 import System.Environment (getArgs)
@@ -39,8 +40,8 @@ main = do
   wishList <- fold <$> sequence crawlers'
 
   -- FIXME: Listen on configHttpHost, not the Warp default.
-  Warp.run (configHttpPort config & fromIntegral) $
-    Web.application I18n.nlNl wishList
+  Warp.run (configHttpPort config & fromIntegral) $ runContT .
+    Web.application I18n.nlNl (pure wishList)
 
 materializeCrawler :: Http.Manager -> Crawler -> IO WishList
 materializeCrawler http (ZalandoCrawler config) =

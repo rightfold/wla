@@ -81,6 +81,7 @@ executable wla
         StrictData
 
     build-depends:
+        async,
         base,
         free,
         http-client,

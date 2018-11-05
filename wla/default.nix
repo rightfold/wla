@@ -1,5 +1,6 @@
 { mkDerivation
 , aeson
+, async
 , base
 , blaze-html
 , bytestring
@@ -25,6 +26,7 @@ mkDerivation {
     src = ./.;
     buildDepends = [
         aeson
+        async
         base
         blaze-html
         bytestring

@@ -6,8 +6,12 @@ import Control.Monad.Free (foldFree)
 import Control.Monad.IO.Class (liftIO)
 import Data.Foldable (fold)
 import Data.Function ((&))
+import Data.IORef (IORef)
 import System.Environment (getArgs)
 
+import qualified Control.Concurrent.Async as Async
+import qualified Control.Concurrent.MVar as MVar
+import qualified Data.IORef as IORef
 import qualified Network.HTTP.Client as Http
 import qualified Network.HTTP.Client.TLS as Http.Tls
 import qualified Network.Wai.Handler.Warp as Warp
@@ -26,24 +30,53 @@ import qualified Wla.Web as Web
 
 main :: IO ()
 main = do
+  -- Globals.
+  http <- Http.Tls.newTlsManager
+  (config, getCrawlers) <- getConfig
+  wishListRef <- IORef.newIORef []
+
+  -- Actors.
+  crawlActor <- Async.async $ crawlProcess http getCrawlers wishListRef
+  webActor   <- Async.async $ webProcess config wishListRef
+  _ <- Async.waitAnyCancel [crawlActor, webActor]
+
+  -- Should not happen.
+  fail "Something went wrong"
+
+-- |
+-- Get the configuration.
+getConfig :: IO (Config, IO [Crawler])
+getConfig = do
   arguments <- getArgs
   (configPath, crawlersPath) <-
     case arguments of { [a, b] -> pure (a, b)
                       ; _      -> fail "Usage: wla CONFIG CRAWLERS" }
 
   config <- readConfig configPath
-  crawlers <- readCrawlers crawlersPath
+  let crawlers = readCrawlers crawlersPath
 
-  http <- Http.Tls.newTlsManager
-  let crawlers' = fmap (materializeCrawler http) crawlers
+  pure (config, crawlers)
 
-  wishList <- fold <$> sequence crawlers'
+-- |
+-- The process that retrieves wish lists.
+crawlProcess :: Http.Manager -> IO [Crawler] -> IORef WishList -> IO a
+crawlProcess http getCrawlers wishListRef = do
+  -- TODO: Wait for SIGHUP and loop instead of waiting indefinitely.
+  wishLists <- traverse (materializeCrawler http) =<< getCrawlers
+  IORef.atomicWriteIORef wishListRef (fold wishLists)
+  MVar.takeMVar =<< MVar.newEmptyMVar
 
+-- |
+-- The process that serves HTTP requests.
+webProcess :: Config -> IORef WishList -> IO ()
+webProcess config wishListRef =
   -- FIXME: Listen on configHttpHost, not the Warp default.
   Warp.run (configHttpPort config & fromIntegral) $
     Wai.Cont.downgrade $
-      Web.application I18n.nlNl (pure wishList)
+      Web.application I18n.nlNl (IORef.readIORef wishListRef)
 
+-- |
+-- Construct an I/O action that retrieves a wish list, given a crawler.
 materializeCrawler :: Http.Manager -> Crawler -> IO WishList
 materializeCrawler http (ZalandoCrawler config) =
   Crawl.Http.runT http $

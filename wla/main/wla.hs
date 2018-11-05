@@ -65,9 +65,9 @@ getConfig = do
 crawlProcess :: Http.Manager -> Sighups -> IO [Crawler] -> IORef WishList -> IO a
 crawlProcess http sighups getCrawlers wishListRef =
   forever $ do
-    Infra.Signals.awaitSighup sighups
     wishLists <- traverse (materializeCrawler http) =<< getCrawlers
     IORef.atomicWriteIORef wishListRef (fold wishLists)
+    Infra.Signals.awaitSighup sighups
 
 -- |
 -- The process that serves HTTP requests.

@@ -7,35 +7,34 @@ import Control.Monad.Free (foldFree)
 import Control.Monad.IO.Class (liftIO)
 import Data.Foldable (fold)
 import Data.Function ((&))
-import Data.Functor (void)
 import Data.IORef (IORef)
 import System.Environment (getArgs)
 
 import qualified Control.Concurrent.Async as Async
-import qualified Control.Concurrent.MVar as MVar
 import qualified Data.IORef as IORef
 import qualified Network.HTTP.Client as Http
 import qualified Network.HTTP.Client.TLS as Http.Tls
 import qualified Network.Wai.Handler.Warp as Warp
-import qualified System.Posix.Signals as Sig
 
 import Control.Logger (Logger (..))
 import Wla.Config (Config (..), Crawler (..), readConfig, readCrawlers)
 import Wla.Software.Zalando (requestWishList)
 import Wla.WishList (WishList)
+import Wla.Infra.Signals (Sighups)
 
 import qualified Network.Wai.Cont as Wai.Cont
 import qualified Wla.Crawl.Http as Crawl.Http
 import qualified Wla.Crawl.Log as Crawl.Log
 import qualified Wla.Crawl.UpstreamDyke as Crawl.UpstreamDyke
 import qualified Wla.I18n as I18n
+import qualified Wla.Infra.Signals as Infra.Signals
 import qualified Wla.Web as Web
 
 main :: IO ()
 main = do
   -- Globals.
   http <- Http.Tls.newTlsManager
-  sighups <- getSighups
+  sighups <- Infra.Signals.sighups
   (config, getCrawlers) <- getConfig
   wishListRef <- IORef.newIORef []
 
@@ -63,10 +62,10 @@ getConfig = do
 
 -- |
 -- The process that retrieves wish lists.
-crawlProcess :: Http.Manager -> IO () -> IO [Crawler] -> IORef WishList -> IO a
+crawlProcess :: Http.Manager -> Sighups -> IO [Crawler] -> IORef WishList -> IO a
 crawlProcess http sighups getCrawlers wishListRef =
   forever $ do
-    sighups
+    Infra.Signals.awaitSighup sighups
     wishLists <- traverse (materializeCrawler http) =<< getCrawlers
     IORef.atomicWriteIORef wishListRef (fold wishLists)
 
@@ -78,15 +77,6 @@ webProcess config wishListRef =
   Warp.run (configHttpPort config & fromIntegral) $
     Wai.Cont.downgrade $
       Web.application I18n.nlNl (IORef.readIORef wishListRef)
-
--- |
--- SIGHUP signals.
-getSighups :: IO (IO ())
-getSighups = do
-  signals <- MVar.newMVar ()
-  let handler = void $ MVar.tryPutMVar signals ()
-  _ <- Sig.installHandler Sig.sigHUP (Sig.Catch handler) Nothing
-  pure $ MVar.takeMVar signals
 
 -- |
 -- Construct an I/O action that retrieves a wish list, given a crawler.

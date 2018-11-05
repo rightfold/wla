@@ -18,6 +18,7 @@ library
         Wla.Crawl.Log,
         Wla.Crawl.UpstreamDyke,
         Wla.I18n,
+        Wla.Infra.Signals,
         Wla.Software.Zalando,
         Wla.Web,
         Wla.WishList,
@@ -57,6 +58,7 @@ library
         semigroupoids,
         text,
         transformers,
+        unix,
         unordered-containers,
         wai
 
@@ -86,6 +88,5 @@ executable wla
         free,
         http-client,
         http-client-tls,
-        unix,
         warp,
         wla

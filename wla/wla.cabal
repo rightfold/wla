@@ -86,5 +86,6 @@ executable wla
         free,
         http-client,
         http-client-tls,
+        unix,
         warp,
         wla

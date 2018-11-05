@@ -16,6 +16,7 @@
 , semigroupoids
 , text
 , transformers
+, unix
 , unordered-containers
 , wai
 , warp }:
@@ -42,6 +43,7 @@ mkDerivation {
         semigroupoids
         text
         transformers
+        unix
         unordered-containers
         wai
         warp

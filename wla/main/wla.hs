@@ -20,21 +20,20 @@ import Control.Logger (Logger (..))
 import Wla.Config (Config (..), Crawler (..), readConfig, readCrawlers)
 import Wla.Software.Zalando (requestWishList)
 import Wla.WishList (WishList)
-import Wla.Infra.Signals (Sighups)
 
 import qualified Network.Wai.Cont as Wai.Cont
+import qualified System.Posix.Signals.Extra as Sig
 import qualified Wla.Crawl.Http as Crawl.Http
 import qualified Wla.Crawl.Log as Crawl.Log
 import qualified Wla.Crawl.UpstreamDyke as Crawl.UpstreamDyke
 import qualified Wla.I18n as I18n
-import qualified Wla.Infra.Signals as Infra.Signals
 import qualified Wla.Web as Web
 
 main :: IO ()
 main = do
   -- Globals.
   http <- Http.Tls.newTlsManager
-  sighups <- Infra.Signals.sighups
+  sighups <- Sig.waiter Sig.Sighup
   (config, getCrawlers) <- getConfig
   wishListRef <- IORef.newIORef []
 
@@ -62,12 +61,12 @@ getConfig = do
 
 -- |
 -- The process that retrieves wish lists.
-crawlProcess :: Http.Manager -> Sighups -> IO [Crawler] -> IORef WishList -> IO a
+crawlProcess :: Http.Manager -> IO () -> IO [Crawler] -> IORef WishList -> IO a
 crawlProcess http sighups getCrawlers wishListRef =
   forever $ do
     wishLists <- traverse (materializeCrawler http) =<< getCrawlers
     IORef.atomicWriteIORef wishListRef (fold wishLists)
-    Infra.Signals.awaitSighup sighups
+    sighups
 
 -- |
 -- The process that serves HTTP requests.

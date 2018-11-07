@@ -9,8 +9,10 @@ library
         src
 
     exposed-modules:
+        Control.Lens.Extra,
         Control.Logger,
         Data.Secret,
+        Network.HTTP.Client.Extra,
         Network.Wai.Cont,
         System.Posix.Signals.Extra,
         Wla.Config,
@@ -41,6 +43,7 @@ library
         DerivingStrategies,
         FlexibleContexts,
         OverloadedStrings,
+        RankNTypes,
         RecordWildCards,
         StrictData
 
@@ -50,6 +53,7 @@ library
         blaze-html,
         bytestring,
         contravariant,
+        exceptions,
         free,
         http-client,
         http-types,

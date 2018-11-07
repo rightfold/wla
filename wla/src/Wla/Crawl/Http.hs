@@ -24,6 +24,8 @@ import qualified Network.HTTP.Client as Http
 
 import Wla.Crawl (Crawl (..))
 
+import qualified Network.HTTP.Client.Extra as Http.Extra
+
 -- |
 -- Interpreter environment.
 data Env =
@@ -63,7 +65,7 @@ interpret (AppendCookie next key value) = do
 interpret (RequestPage next host port path) = do
   http <- view envHttp
   request <- makeRequest host port path
-  response <- liftIO $ Http.httpLbs request http
+  response <- liftIO . Http.Extra.redactingCookie $ Http.httpLbs request http
   pure . next . Text.Lazy.decodeUtf8With Text.lenientDecode $
                   Http.responseBody response
 

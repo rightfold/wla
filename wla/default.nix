@@ -5,6 +5,7 @@
 , blaze-html
 , bytestring
 , contravariant
+, exceptions
 , free
 , http-client
 , http-client-tls
@@ -33,6 +34,7 @@ mkDerivation {
         blaze-html
         bytestring
         contravariant
+        exceptions
         free
         http-client
         http-client-tls

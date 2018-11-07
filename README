@@ -4,6 +4,14 @@ Wish List Aggregator is a software application that aggregates wish lists from
 various webshops. With Wish List Aggregator you can easily keep track of all
 the items you may want to purchase later.
 
+Wish List Aggregator can crawl webshops that use the following webshop
+software, to retrieve your wish lists: Zalando.
+
+There are two configuration files: the configuration file and the crawlers
+file. The configuration file is read once when starting the daemon. The
+crawlers file is read each time you want to crawl. Both configuration files are
+in JSON format.
+
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU Affero General Public License as published by the Free
 Software Foundation, either version 3 of the License, or (at your option) any

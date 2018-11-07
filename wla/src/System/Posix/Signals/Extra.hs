@@ -5,7 +5,10 @@ module System.Posix.Signals.Extra
   , waiter
   ) where
 
+import Control.Monad (forever)
+import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Functor (void)
+import Pipes (Producer, yield)
 
 import qualified Control.Concurrent.Chan as Chan
 import qualified System.Posix.Signals as Sig
@@ -17,14 +20,13 @@ data Signal
   deriving stock (Eq, Ord, Show)
 
 -- |
--- Set up a signal handler and return an I/O action that blocks until the
--- signal was received.
-waiter :: Signal -> IO (IO ())
-waiter signal = do
+-- Set up a signal handler and return a producer that yields signals.
+waiter :: (MonadIO m, MonadIO m') => Signal -> m (Producer () m' a)
+waiter signal = liftIO $ do
   chan <- Chan.newChan
   let handler = void $ Chan.writeChan chan ()
   _ <- Sig.installHandler (reifySignal signal) (Sig.Catch handler) Nothing
-  pure $ Chan.readChan chan
+  pure . forever $ yield =<< liftIO (Chan.readChan chan)
 
 reifySignal :: Signal -> Sig.Signal
 reifySignal Sighup = Sig.sigHUP

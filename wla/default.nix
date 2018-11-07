@@ -12,6 +12,7 @@
 , lens
 , lens-aeson
 , mtl
+, pipes
 , scientific
 , semigroupoids
 , text
@@ -39,6 +40,7 @@ mkDerivation {
         lens
         lens-aeson
         mtl
+        pipes
         scientific
         semigroupoids
         text

@@ -19,6 +19,8 @@ library
         Wla.Crawl.Log,
         Wla.Crawl.UpstreamDyke,
         Wla.I18n,
+        Wla.Process.Crawl,
+        Wla.Process.Web,
         Wla.Software.Zalando,
         Wla.Web,
         Wla.WishList,
@@ -54,13 +56,15 @@ library
         lens,
         lens-aeson,
         mtl,
+        pipes,
         scientific,
         semigroupoids,
         text,
         transformers,
         unix,
         unordered-containers,
-        wai
+        wai,
+        warp
 
 executable wla
     hs-source-dirs:
@@ -85,8 +89,6 @@ executable wla
     build-depends:
         async,
         base,
-        free,
-        http-client,
         http-client-tls,
-        warp,
+        pipes,
         wla

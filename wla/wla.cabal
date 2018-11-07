@@ -62,6 +62,7 @@ library
         mmorph,
         mtl,
         pipes,
+        profunctors,
         scientific,
         semigroupoids,
         text,

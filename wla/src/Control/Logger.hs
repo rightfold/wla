@@ -3,12 +3,14 @@
 module Control.Logger
   ( Logger (..)
   , (<<)
+  , sieved
   ) where
 
 import Control.Monad.Morph (MFunctor, hoist)
 import Data.Functor.Apply (Apply, (.>))
 import Data.Functor.Contravariant (Contravariant, (>$<), contramap)
 import Data.Functor.Contravariant.Divisible (Decidable, Divisible, choose, conquer, divide, lose)
+import Data.Profunctor.Sieve (Sieve, sieve)
 import Data.Semigroup (Semigroup, (<>))
 import Data.Void (absurd)
 
@@ -26,6 +28,11 @@ newtype Logger f a =
 (<<) :: Logger f a -> a -> f ()
 (<<) = emit
 {-# INLINE (<<) #-}
+
+-- |
+-- Create a logger from an arrow.
+sieved :: Sieve p f => p a () -> Logger f a
+sieved = Logger . sieve
 
 --------------------------------------------------------------------------------
 -- Semigroup tower

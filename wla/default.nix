@@ -15,6 +15,7 @@
 , mmorph
 , mtl
 , pipes
+, profunctors
 , scientific
 , semigroupoids
 , text
@@ -45,6 +46,7 @@ mkDerivation {
         mmorph
         mtl
         pipes
+        profunctors
         scientific
         semigroupoids
         text

@@ -9,6 +9,7 @@ import qualified Control.Concurrent.Async as Async
 import qualified Data.IORef as IORef
 import qualified Network.HTTP.Client.TLS as Http.Tls
 
+import Control.Logger (Logger (..))
 import Wla.Config (Config (..), Crawler (..), readConfig, readCrawlers)
 import Wla.Process.Crawl (crawlProcess)
 import Wla.Process.Web (webProcess)
@@ -18,6 +19,7 @@ import qualified System.Posix.Signals.Extra as Sig
 main :: IO ()
 main = do
   -- Globals.
+  let logger = Logger print
   http <- Http.Tls.newTlsManager
   sighups <- Sig.waiter Sig.Sighup
   (config, getCrawlers) <- getConfig
@@ -25,7 +27,7 @@ main = do
 
   -- Actors.
   crawlActor <- Async.async . runEffect $
-                  sighups >-> crawlProcess http getCrawlers wishListRef
+                  sighups >-> crawlProcess logger http getCrawlers wishListRef
   webActor   <- Async.async $ webProcess config wishListRef
   _ <- Async.waitAnyCancel [crawlActor, webActor]
 

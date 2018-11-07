@@ -5,6 +5,7 @@ module Control.Logger
   , (<<)
   ) where
 
+import Control.Monad.Morph (MFunctor, hoist)
 import Data.Functor.Apply (Apply, (.>))
 import Data.Functor.Contravariant (Contravariant, (>$<), contramap)
 import Data.Functor.Contravariant.Divisible (Decidable, Divisible, choose, conquer, divide, lose)
@@ -57,3 +58,9 @@ instance Applicative f => Decidable (Logger f) where
   lose f = Logger (absurd . f)
   {-# INLINE choose #-}
   {-# INLINE lose #-}
+
+--------------------------------------------------------------------------------
+-- MFunctor tower
+
+instance MFunctor Logger where
+  hoist f l = Logger (f . emit l)

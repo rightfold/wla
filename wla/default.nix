@@ -12,6 +12,7 @@
 , http-types
 , lens
 , lens-aeson
+, mmorph
 , mtl
 , pipes
 , scientific
@@ -41,6 +42,7 @@ mkDerivation {
         http-types
         lens
         lens-aeson
+        mmorph
         mtl
         pipes
         scientific

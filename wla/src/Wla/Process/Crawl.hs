@@ -6,6 +6,7 @@ module Wla.Process.Crawl
 
 import Control.Monad (forever)
 import Control.Monad.Free (foldFree)
+import Control.Monad.Morph (hoist)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Control.Monad.Trans.Class (lift)
 import Data.Foldable (fold)
@@ -27,19 +28,20 @@ import qualified Wla.Software.Zalando as Software.Zalando
 -- |
 -- The process that retrieves wish lists. This is a pipe that typically
 -- consumes SIGHUPs.
-crawlProcess :: MonadIO m => Http.Manager -> m [Crawler] -> IORef WishList -> Consumer () m a
-crawlProcess http getCrawlers wishListRef =
+crawlProcess :: MonadIO m => Logger m Crawl.Log.Message -> Http.Manager
+             -> m [Crawler] -> IORef WishList -> Consumer () m a
+crawlProcess logger http getCrawlers wishListRef =
   forever $ do
-    wishLists <- lift $ traverse (materializeCrawler http) =<< getCrawlers
+    wishLists <- lift $ traverse (materializeCrawler logger http) =<< getCrawlers
     liftIO $ IORef.atomicWriteIORef wishListRef (fold wishLists)
     await
 
 -- |
 -- Construct an I/O action that retrieves a wish list, given a crawler.
-materializeCrawler :: MonadIO m => Http.Manager -> Crawler -> m WishList
-materializeCrawler http (ZalandoCrawler config) =
+materializeCrawler :: MonadIO m => Logger m Crawl.Log.Message -> Http.Manager -> Crawler -> m WishList
+materializeCrawler logger http (ZalandoCrawler config) =
   Crawl.Http.runT http $
-    let interpret = Crawl.Log.interpret (Logger (liftIO . print)) $
+    let interpret = Crawl.Log.interpret (hoist lift logger) $
                       Crawl.UpstreamDyke.interpret $
                         Crawl.Http.interpret in
     foldFree interpret $ Software.Zalando.requestWishList config

@@ -59,6 +59,7 @@ library
         http-types,
         lens,
         lens-aeson,
+        mmorph,
         mtl,
         pipes,
         scientific,

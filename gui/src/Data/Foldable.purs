@@ -6,8 +6,7 @@ module Data.Foldable
   ) where
 
 import Control.Applicative (class Applicative, pure)
-import Control.Apply (apply, (*>))
-import Data.Functor (map)
+import Control.Apply ((*>))
 import Data.Unit (Unit, unit)
 
 class Foldable f where

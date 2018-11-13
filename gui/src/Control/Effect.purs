@@ -6,11 +6,10 @@ import Control.Applicative (class Applicative)
 import Control.Apply (class Apply)
 import Control.Bind (class Bind)
 import Control.Monad (class Monad)
-import Control.Monad.Error (class MonadBlunder, class MonadError, class MonadThrow)
+import Control.Monad.Error (class MonadBlunder, class MonadError, class MonadThrow, rid)
 import Control.Semigroupoid ((<<))
 import Data.Bifunctor (class Bifunctor)
 import Data.Functor (class Functor, map)
-import Data.Void (Void)
 
 foreign import data Effect :: Type -> Type -> Type
 
@@ -29,7 +28,7 @@ instance applicativeEffect :: Applicative (Effect e) where
 instance monadEffect :: Monad (Effect e)
 
 instance bifunctorEffect :: Bifunctor Effect where
-  lmap f action = action `ridF` (throwF << f)
+  lmap f action = action `rid` (throwF << f)
   rmap = map
 
 instance monadThrowEffect :: MonadThrow e (Effect e) where
@@ -38,7 +37,7 @@ instance monadThrowEffect :: MonadThrow e (Effect e) where
 instance monadErrorEffect :: MonadError e (Effect e) where
   catch = ridF
 
-instance monadBlunderEffect :: MonadBlunder e (Effect Void) (Effect e) where
+instance monadBlunderEffect :: MonadBlunder e (Effect v) (Effect e) where
   rid = ridF
 
 foreign import mapF :: forall e a b. (a -> b) -> Effect e a -> Effect e b

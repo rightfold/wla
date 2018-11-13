@@ -7,11 +7,9 @@ import Control.Bind ((>>=), bind, discard)
 import Control.Semigroupoid ((<<))
 import Control.Effect (Effect)
 import Control.Monad.Error (rid, throw)
-import Data.Bifunctor (lmap)
 import Data.Semigroup ((<>))
 import Data.Maybe (Maybe (..), maybe)
 import Data.Unit (Unit, unit)
-import Data.Void (absurd)
 import Gui.Config (Config)
 import Gui.WishList.Dom (renderWishList)
 
@@ -44,4 +42,4 @@ main config = do
   pure unit
 
 scare :: forall a e. Effect (Dom.Error a) Unit -> Effect e Unit
-scare action = lmap absurd (action `rid` (Dom.alert << Dom.errorMessage))
+scare action = action `rid` (Dom.alert << Dom.errorMessage)

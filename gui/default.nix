@@ -40,5 +40,6 @@ in
             find 'output' -type f -name '*.js' -print0 |                    \
                 xargs -0 purs bundle -m Main > "$out/gui.js"
             cp 'src/index.html' "$out/index.html"
+            echo '[]' > "$out/wish-list.json"
         '';
     }

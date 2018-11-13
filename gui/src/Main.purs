@@ -36,7 +36,7 @@ main config = do
                   >>= maybe (throw (Dom.newError "No response text")) pure
     json <- maybe (throw (Dom.newError "Bad JSON")) pure (Json.parse response)
     pure unit
-  Dom.xmlHttpRequestOpen xhr "GET" (config.apiUrl <> "/")
+  Dom.xmlHttpRequestOpen xhr "GET" (config.apiUrl <> "/wish-list.json")
   Dom.xmlHttpRequestSend xhr
 
   pure unit

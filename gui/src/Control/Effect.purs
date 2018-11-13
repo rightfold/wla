@@ -2,14 +2,9 @@ module Control.Effect
   ( Effect
   ) where
 
-import Control.Applicative (class Applicative)
-import Control.Apply (class Apply)
-import Control.Bind (class Bind)
-import Control.Monad (class Monad)
 import Control.Monad.Error (class MonadBlunder, class MonadError, class MonadThrow, rid, throw)
 import Control.Semigroupoid ((<<))
-import Data.Bifunctor (class Bifunctor)
-import Data.Functor (class Functor, map)
+import Data.Functor (class Apply, class Applicative, class Bifunctor, class Bind, class Functor, class Monad, map)
 
 foreign import data Effect :: Type -> Type -> Type
 

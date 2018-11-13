@@ -3,8 +3,7 @@ module Gui.WishList.Dom
   , renderWishListItem
   ) where
 
-import Control.Applicative (pure)
-import Control.Bind (bind, discard)
+import Data.Functor (bind, discard, pure)
 import Control.Effect (Effect)
 import Data.Foldable (for_)
 import Data.Maybe ((??))

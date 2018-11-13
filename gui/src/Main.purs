@@ -2,8 +2,7 @@ module Main
   ( main
   ) where
 
-import Control.Applicative (pure)
-import Control.Bind ((>>=), bind, discard)
+import Data.Functor ((>>=), bind, discard, pure)
 import Control.Semigroupoid ((<<))
 import Control.Effect (Effect)
 import Control.Monad.Error (rid, throw)

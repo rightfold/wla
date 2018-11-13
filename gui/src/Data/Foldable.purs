@@ -5,8 +5,7 @@ module Data.Foldable
   , for_
   ) where
 
-import Control.Applicative (class Applicative, pure)
-import Control.Apply ((*>))
+import Data.Functor (class Applicative, (*>), pure)
 import Data.Unit (Unit, unit)
 
 class Foldable f where

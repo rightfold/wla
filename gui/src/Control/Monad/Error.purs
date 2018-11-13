@@ -8,8 +8,7 @@ module Control.Monad.Error
   , swallow
   ) where
 
-import Control.Applicative (pure)
-import Control.Monad (class Monad)
+import Data.Functor (class Monad, pure)
 import Data.Unit (Unit, unit)
 
 class Monad f <= MonadThrow e f | f -> e where

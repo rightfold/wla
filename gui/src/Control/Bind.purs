@@ -13,8 +13,8 @@ infixl 1 bind as >>=
 class Functor f <= Bind f where
   bind :: forall a b. f a -> (a -> f b) -> f b
 
-class Discard a where
-  discard :: forall f b. Bind f => f a -> (a -> f b) -> f b
+class Discard a
+instance discardUnit :: Discard Unit
 
-instance discardUnit :: Discard Unit where
-  discard = bind
+discard :: forall a f b. Discard a => Bind f => f a -> (a -> f b) -> f b
+discard = bind

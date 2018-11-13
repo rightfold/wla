@@ -116,6 +116,10 @@ class Profunctor p where
   lpmap :: forall a b x. (b -> a) -> p a x -> p b x
   rpmap :: forall a b x. (a -> b) -> p x a -> p x b
 
+instance profunctorFunction :: Profunctor Function where
+  lpmap f g x = g (f x)
+  rpmap f g x = f (g x)
+
 --------------------------------------------------------------------------------
 
 class Profunctor p <= Choice p where

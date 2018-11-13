@@ -6,15 +6,17 @@ import Control.Applicative (pure)
 import Control.Bind ((>>=), bind, discard)
 import Control.Effect (Effect)
 import Control.Monad.Error (throw)
+import Data.Semigroup ((<>))
 import Data.Maybe (maybe)
 import Data.Unit (Unit, unit)
+import Gui.Config (Config)
 import Gui.WishList.Dom (renderWishList)
 
 import Dom as Dom
 import Gui.I18n as I18n
 
-main :: Effect (Dom.Error ()) Unit
-main = do
+main :: Config -> Effect (Dom.Error ()) Unit
+main config = do
   window <- Dom.window
   document <- Dom.windowDocument window
   container <- Dom.documentGetElementById document "container"
@@ -26,7 +28,7 @@ main = do
   xhr <- Dom.newXmlHttpRequest
   Dom.eventTargetAddEventListener xhr "load" \_ ->
     pure unit
-  Dom.xmlHttpRequestOpen xhr "GET" "/"
+  Dom.xmlHttpRequestOpen xhr "GET" (config.apiUrl <> "/")
   Dom.xmlHttpRequestSend xhr
 
   pure unit

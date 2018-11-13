@@ -6,7 +6,7 @@ module Data.Foldable
   ) where
 
 import Control.Applicative (class Applicative, pure)
-import Control.Apply (apply)
+import Control.Apply (apply, (*>))
 import Data.Functor (map)
 import Data.Unit (Unit, unit)
 
@@ -22,4 +22,4 @@ foreign import foldlA :: forall a b. (b -> a -> b) -> b -> Array a -> b
 foreign import foldrA :: forall a b. (a -> b -> b) -> b -> Array a -> b
 
 for_ :: forall f g a. Foldable f => Applicative g => f a -> (a -> g Unit) -> g Unit
-for_ xs k = foldr (\a b -> apply (map (\c _ -> c) (k a)) b) (pure unit) xs
+for_ xs k = foldr (\a b -> k a *> b) (pure unit) xs

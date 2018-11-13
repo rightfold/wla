@@ -1,5 +1,11 @@
 "use strict";
 
+exports.alert = function(message) {
+    return function() {
+        alert(message);
+    };
+};
+
 exports.nodeAppendChild = function(parent) {
     return function(child) {
         return function() {
@@ -35,6 +41,10 @@ exports.documentGetElementByIdF = function(Nothing) {
             };
         };
     };
+};
+
+exports.errorMessage = function(error) {
+    return error.message;
 };
 
 exports.eventTargetAddEventListener = function(eventTarget) {

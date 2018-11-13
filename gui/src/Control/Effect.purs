@@ -7,7 +7,9 @@ import Control.Apply (class Apply)
 import Control.Bind (class Bind)
 import Control.Monad (class Monad)
 import Control.Monad.Error (class MonadBlunder, class MonadError, class MonadThrow)
-import Data.Functor (class Functor)
+import Control.Semigroupoid ((<<))
+import Data.Bifunctor (class Bifunctor)
+import Data.Functor (class Functor, map)
 import Data.Void (Void)
 
 foreign import data Effect :: Type -> Type -> Type
@@ -25,6 +27,10 @@ instance applicativeEffect :: Applicative (Effect e) where
   pure = pureF
 
 instance monadEffect :: Monad (Effect e)
+
+instance bifunctorEffect :: Bifunctor Effect where
+  lmap f action = action `ridF` (throwF << f)
+  rmap = map
 
 instance monadThrowEffect :: MonadThrow e (Effect e) where
   throw = throwF

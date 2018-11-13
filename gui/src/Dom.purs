@@ -20,8 +20,10 @@ module Dom
   , Window
   , XmlHttpRequest
 
+  , alert
   , documentCreateElement
   , documentGetElementById
+  , errorMessage
   , eventTargetAddEventListener
   , newError
   , newXmlHttpRequest
@@ -66,8 +68,10 @@ documentGetElementById = documentGetElementByIdF Nothing Just
 xmlHttpRequestGetResponseText :: forall a. XmlHttpRequest a -> Effect (Error ()) (Maybe String)
 xmlHttpRequestGetResponseText = xmlHttpRequestGetResponseTextF Nothing Just
 
+foreign import alert :: forall e. String -> Effect e Unit
 foreign import documentCreateElement :: forall a. Document a -> String -> Effect (Error ()) (Element ())
 foreign import documentGetElementByIdF :: forall a. (forall x. Maybe x) -> (forall x. x -> Maybe x) -> Document a -> String -> Effect (Error ()) (Maybe (Element ()))
+foreign import errorMessage :: forall a. Error a -> String
 foreign import eventTargetAddEventListener :: forall a. EventTarget a -> String -> (Event () -> Effect Void Unit) -> Effect (Error ()) Unit
 foreign import newError :: String -> Error ()
 foreign import newXmlHttpRequest :: forall e. Effect e (XmlHttpRequest ())

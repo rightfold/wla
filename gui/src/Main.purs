@@ -13,7 +13,7 @@ import Gui.WishList.Dom (renderWishList)
 import Dom as Dom
 import Gui.I18n as I18n
 
-main :: forall e. Effect (Dom.Error ()) Unit
+main :: Effect (Dom.Error ()) Unit
 main = do
   window <- Dom.window
   document <- Dom.windowDocument window
@@ -22,5 +22,11 @@ main = do
 
   element <- renderWishList I18n.nlNl document []
   Dom.nodeAppendChild container element
+
+  xhr <- Dom.newXmlHttpRequest
+  Dom.eventTargetAddEventListener xhr "load" \_ ->
+    pure unit
+  Dom.xmlHttpRequestOpen xhr "GET" "/"
+  Dom.xmlHttpRequestSend xhr
 
   pure unit

@@ -37,8 +37,24 @@ exports.documentGetElementByIdF = function(Nothing) {
     };
 };
 
+exports.eventTargetAddEventListener = function(eventTarget) {
+    return function(eventType) {
+        return function(callback) {
+            return function() {
+                eventTarget.addEventListener(eventType, function(event) {
+                    callback(event)();
+                });
+            };
+        };
+    };
+};
+
 exports.newError = function(message) {
     return new Error(message);
+};
+
+exports.newXmlHttpRequest = function() {
+    return new XMLHttpRequest();
 };
 
 exports.window = function() {
@@ -48,5 +64,21 @@ exports.window = function() {
 exports.windowDocument = function(window) {
     return function() {
         return window.document;
+    };
+};
+
+exports.xmlHttpRequestOpen = function(xhr) {
+    return function(method) {
+        return function(url) {
+            return function() {
+                xhr.open(method, url);
+            };
+        };
+    };
+};
+
+exports.xmlHttpRequestSend = function(xhr) {
+    return function() {
+        xhr.send();
     };
 };

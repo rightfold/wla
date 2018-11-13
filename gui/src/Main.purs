@@ -7,7 +7,7 @@ import Control.Bind ((>>=), bind, discard)
 import Control.Effect (Effect)
 import Control.Monad.Error (throw)
 import Data.Semigroup ((<>))
-import Data.Maybe (maybe)
+import Data.Maybe (Maybe (..), maybe)
 import Data.Unit (Unit, unit)
 import Gui.Config (Config)
 import Gui.WishList.Dom (renderWishList)
@@ -22,7 +22,10 @@ main config = do
   container <- Dom.documentGetElementById document "container"
                  >>= maybe (throw (Dom.newError "Cannot find #container")) pure
 
-  element <- renderWishList I18n.nlNl document []
+  element <- renderWishList I18n.nlNl document
+               [ { name: Just "Schoen", imageUrl: Nothing }
+               , { name: Just "Rok",    imageUrl: Nothing }
+               , { name: Just "Kerbal", imageUrl: Nothing } ]
   Dom.nodeAppendChild container element
 
   xhr <- Dom.newXmlHttpRequest

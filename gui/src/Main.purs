@@ -5,7 +5,7 @@ module Main
 import Control.Applicative (pure)
 import Control.Bind ((>>=), bind, discard)
 import Control.Effect (Effect)
-import Control.Monad.Error (throw)
+import Control.Monad.Error (swallow, throw)
 import Data.Semigroup ((<>))
 import Data.Maybe (Maybe (..), maybe)
 import Data.Unit (Unit, unit)
@@ -29,7 +29,9 @@ main config = do
   Dom.nodeAppendChild container element
 
   xhr <- Dom.newXmlHttpRequest
-  Dom.eventTargetAddEventListener xhr "load" \_ ->
+  Dom.eventTargetAddEventListener xhr "load" \_ -> swallow do
+    response <- Dom.xmlHttpRequestGetResponseText xhr
+                  >>= maybe (throw (Dom.newError "No response text")) pure
     pure unit
   Dom.xmlHttpRequestOpen xhr "GET" (config.apiUrl <> "/")
   Dom.xmlHttpRequestSend xhr

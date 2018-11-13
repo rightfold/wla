@@ -35,3 +35,15 @@ exports.throwF = function(exception) {
         throw exception;
     };
 };
+
+exports.ridF = function(action) {
+    return function(handler) {
+        return function() {
+            try {
+                return action();
+            } catch (ex) {
+                return handler(ex)();
+            }
+        };
+    };
+};

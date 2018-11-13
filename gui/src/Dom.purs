@@ -29,6 +29,7 @@ module Dom
   , nodeSetTextContent
   , window
   , windowDocument
+  , xmlHttpRequestGetResponseText
   , xmlHttpRequestOpen
   , xmlHttpRequestSend
   ) where
@@ -62,6 +63,9 @@ type XmlHttpRequest a = EventTarget (xmlHttpRequest :: XMLHTTPREQUEST | a)
 documentGetElementById :: forall a. Document a -> String -> Effect (Error ()) (Maybe (Element ()))
 documentGetElementById = documentGetElementByIdF Nothing Just
 
+xmlHttpRequestGetResponseText :: forall a. XmlHttpRequest a -> Effect (Error ()) (Maybe String)
+xmlHttpRequestGetResponseText = xmlHttpRequestGetResponseTextF Nothing Just
+
 foreign import documentCreateElement :: forall a. Document a -> String -> Effect (Error ()) (Element ())
 foreign import documentGetElementByIdF :: forall a. (forall x. Maybe x) -> (forall x. x -> Maybe x) -> Document a -> String -> Effect (Error ()) (Maybe (Element ()))
 foreign import eventTargetAddEventListener :: forall a. EventTarget a -> String -> (Event () -> Effect Void Unit) -> Effect (Error ()) Unit
@@ -71,5 +75,6 @@ foreign import nodeAppendChild :: forall a b. Node a -> Node b -> Effect (Error 
 foreign import nodeSetTextContent :: forall a. Node a -> String -> Effect (Error ()) Unit
 foreign import window :: Effect (Error ()) (Window ())
 foreign import windowDocument :: forall a. Window a -> Effect (Error ()) (Document ())
+foreign import xmlHttpRequestGetResponseTextF :: forall a. (forall x. Maybe x) -> (forall x. x -> Maybe x) -> XmlHttpRequest a -> Effect (Error ()) (Maybe String)
 foreign import xmlHttpRequestOpen :: forall a. XmlHttpRequest a -> String -> String -> Effect (Error ()) Unit
 foreign import xmlHttpRequestSend :: forall a. XmlHttpRequest a -> Effect (Error ()) Unit

@@ -6,8 +6,9 @@ import Control.Applicative (class Applicative)
 import Control.Apply (class Apply)
 import Control.Bind (class Bind)
 import Control.Monad (class Monad)
-import Control.Monad.Error (class MonadThrow)
+import Control.Monad.Error (class MonadBlunder, class MonadError, class MonadThrow)
 import Data.Functor (class Functor)
+import Data.Void (Void)
 
 foreign import data Effect :: Type -> Type -> Type
 
@@ -28,8 +29,15 @@ instance monadEffect :: Monad (Effect e)
 instance monadThrowEffect :: MonadThrow e (Effect e) where
   throw = throwF
 
+instance monadErrorEffect :: MonadError e (Effect e) where
+  catch = ridF
+
+instance monadBlunderEffect :: MonadBlunder e (Effect Void) (Effect e) where
+  rid = ridF
+
 foreign import mapF :: forall e a b. (a -> b) -> Effect e a -> Effect e b
 foreign import bindF :: forall e a b. Effect e a -> (a -> Effect e b) -> Effect e b
 foreign import applyF :: forall e a b. Effect e (a -> b) -> Effect e a -> Effect e b
 foreign import pureF :: forall e a. a -> Effect e a
 foreign import throwF :: forall e a. e -> Effect e a
+foreign import ridF :: forall e v a. Effect e a -> (e -> Effect v a) -> Effect v a

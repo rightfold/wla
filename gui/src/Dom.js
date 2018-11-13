@@ -67,6 +67,17 @@ exports.windowDocument = function(window) {
     };
 };
 
+exports.xmlHttpRequestGetResponseTextF = function(Nothing) {
+    return function(Just) {
+        return function(xhr) {
+            return function() {
+                var text = xhr.responseText;
+                return text === null ? Nothing : Just(text);
+            };
+        };
+    };
+};
+
 exports.xmlHttpRequestOpen = function(xhr) {
     return function(method) {
         return function(url) {

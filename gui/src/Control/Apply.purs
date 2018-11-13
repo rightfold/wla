@@ -12,6 +12,9 @@ class Functor f <= Apply f where
   apply :: forall a b. f (a -> b) -> f a -> f b
 infixl 4 apply as <*>
 
+instance applyFunction :: Apply (Function i) where
+  apply f g x = f x (g x)
+
 applyFirst :: forall f a. Apply f => f a -> f Unit -> f a
 applyFirst a b = (\x _ -> x) <$> a <*> b
 infixl 4 applyFirst as <*

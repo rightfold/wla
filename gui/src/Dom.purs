@@ -37,8 +37,8 @@ module Dom
   ) where
 
 import Control.Effect (Effect)
-import Data.Maybe (Maybe (..))
-import Data.Unit (Unit)
+import Data.Either (Either (..), Maybe)
+import Data.Unit (Unit, unit)
 import Data.Void (Void)
 
 foreign import data Foreign :: # Interface -> Type
@@ -63,10 +63,10 @@ type Window         a = Foreign     (window         :: WINDOW         | a)
 type XmlHttpRequest a = EventTarget (xmlHttpRequest :: XMLHTTPREQUEST | a)
 
 documentGetElementById :: forall a. Document a -> String -> Effect (Error ()) (Maybe (Element ()))
-documentGetElementById = documentGetElementByIdF Nothing Just
+documentGetElementById = documentGetElementByIdF (Left unit) Right
 
 xmlHttpRequestGetResponseText :: forall a. XmlHttpRequest a -> Effect (Error ()) (Maybe String)
-xmlHttpRequestGetResponseText = xmlHttpRequestGetResponseTextF Nothing Just
+xmlHttpRequestGetResponseText = xmlHttpRequestGetResponseTextF (Left unit) Right
 
 foreign import alert :: forall e. String -> Effect e Unit
 foreign import documentCreateElement :: forall a. Document a -> String -> Effect (Error ()) (Element ())

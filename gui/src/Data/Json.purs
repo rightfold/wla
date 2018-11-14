@@ -10,10 +10,10 @@ module Data.Json
   , _Array
   ) where
 
-import Data.Maybe (Maybe (..))
+import Data.Either (Either (..), Maybe)
 import Data.Number.Finite (Finite)
 import Data.Optic (Prism', prism')
-import Data.Unit (Unit)
+import Data.Unit (Unit, unit)
 
 -- | JSON value, same representation as that returned by the ECMAScript
 -- | quasi-function JSON.parse.
@@ -21,26 +21,26 @@ foreign import data Json :: Type
 
 -- | Parse JSON.
 parse :: String -> Maybe Json
-parse = parseF Nothing Just
+parse = parseF (Left unit) Right
 foreign import parseF :: (forall x. Maybe x) -> (forall x. x -> Maybe x) -> String -> Maybe Json
 
 -- | Format JSON.
 foreign import stringify :: Json -> String
 
 _Null :: Prism' Json Unit
-_Null = prism' (getNull Nothing Just) setNull
+_Null = prism' (getNull (Left unit) Right) setNull
 
 _Boolean :: Prism' Json Boolean
-_Boolean = prism' (getBoolean Nothing Just) setBoolean
+_Boolean = prism' (getBoolean (Left unit) Right) setBoolean
 
 _Number :: Prism' Json Finite
-_Number = prism' (getNumber Nothing Just) setNumber
+_Number = prism' (getNumber (Left unit) Right) setNumber
 
 _String :: Prism' Json String
-_String = prism' (getString Nothing Just) setString
+_String = prism' (getString (Left unit) Right) setString
 
 _Array :: Prism' Json (Array Json)
-_Array = prism' (getArray Nothing Just) setArray
+_Array = prism' (getArray (Left unit) Right) setArray
 
 foreign import getNull :: (forall x. Maybe x) -> (forall x. x -> Maybe x) -> Json -> Maybe Unit
 foreign import setNull :: Unit -> Json

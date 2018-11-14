@@ -7,7 +7,7 @@ import Control.Semigroupoid ((<<))
 import Control.Effect (Effect)
 import Control.Monad.Error (rid, throw)
 import Data.Semigroup ((<>))
-import Data.Maybe (Maybe (..), maybe)
+import Data.Either (Either (..), maybe)
 import Data.Unit (Unit, unit)
 import Gui.Config (Config)
 import Gui.WishList.Dom (renderWishList)
@@ -24,9 +24,9 @@ main config = do
                  >>= maybe (throw (Dom.newError "Cannot find #container")) pure
 
   element <- renderWishList I18n.nlNl document
-               [ { name: Just "Schoen", imageUrl: Nothing }
-               , { name: Just "Rok",    imageUrl: Nothing }
-               , { name: Just "Kerbal", imageUrl: Nothing } ]
+               [ { name: Right "Schoen", imageUrl: Left unit }
+               , { name: Right "Rok",    imageUrl: Left unit }
+               , { name: Right "Kerbal", imageUrl: Left unit } ]
   Dom.nodeAppendChild container element
 
   xhr <- Dom.newXmlHttpRequest

@@ -8,9 +8,8 @@ module Data.Optic
   ) where
 
 import Control.Semigroupoid (id)
-import Data.Either (Either (..), either)
+import Data.Either (Either (..), Maybe, either, maybe)
 import Data.Functor (class Choice, lpmap, rpmap, right)
-import Data.Maybe (Maybe, maybe)
 
 --------------------------------------------------------------------------------
 

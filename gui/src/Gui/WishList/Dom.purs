@@ -5,8 +5,8 @@ module Gui.WishList.Dom
 
 import Data.Functor (bind, discard, pure)
 import Control.Effect (Effect)
+import Data.Either ((??))
 import Data.Foldable (for_)
-import Data.Maybe ((??))
 import Dom (Document, Element, Error, nodeAppendChild, nodeSetTextContent, documentCreateElement)
 
 import Gui.I18n (I18n)

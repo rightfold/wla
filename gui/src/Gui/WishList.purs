@@ -4,7 +4,7 @@ module Gui.WishList
   , WishListItem (..)
   ) where
 
-import Data.Maybe (Maybe)
+import Data.Either (Maybe)
 
 -- | Wish lists are arrays instead of lists because they are never manipulated
 -- | by the GUI; they are read-only.

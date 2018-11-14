@@ -3,11 +3,11 @@ module Main
   ) where
 
 import Data.Functor ((>>=), bind, discard, pure)
-import Control.Semigroupoid ((<<))
+import Control.Semigroupoid (($), (<<))
 import Control.Effect (Effect)
 import Control.Monad.Error (rid, throw)
 import Data.Semigroup ((<>))
-import Data.Either (Either (..), maybe)
+import Data.Either (Either (..), either, maybe)
 import Data.Unit (Unit, unit)
 import Gui.Config (Config)
 import Gui.WishList.Dom (renderWishList)
@@ -15,6 +15,7 @@ import Gui.WishList.Dom (renderWishList)
 import Data.Json as Json
 import Dom as Dom
 import Gui.I18n as I18n
+import Network.Ajax as Ajax
 
 main :: Config -> Effect (Dom.Error ()) Unit
 main config = do
@@ -29,14 +30,11 @@ main config = do
                , { name: Right "Kerbal", imageUrl: Left unit } ]
   Dom.nodeAppendChild container element
 
-  xhr <- Dom.newXmlHttpRequest
-  Dom.eventTargetAddEventListener xhr "load" \_ -> scare do
-    response <- Dom.xmlHttpRequestGetResponseText xhr
-                  >>= maybe (throw (Dom.newError "No response text")) pure
-    json <- maybe (throw (Dom.newError "Bad JSON")) pure (Json.parse response)
+  let req = { method: "GET", url: config.apiUrl <> "/wish-list.json" }
+  Ajax.request' req $ scare << \result -> do
+    res <- either throw pure result
+    json <- maybe (throw (Dom.newError "Bad JSON")) pure (Json.parse res.body)
     pure unit
-  Dom.xmlHttpRequestOpen xhr "GET" (config.apiUrl <> "/wish-list.json")
-  Dom.xmlHttpRequestSend xhr
 
   pure unit
 

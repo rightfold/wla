@@ -3,7 +3,7 @@ module Control.Semigroupoid
   , compose, (<<)
 
   , class Category
-  , id
+  , id, ($)
   ) where
 
 class Semigroupoid p where
@@ -15,6 +15,7 @@ instance semigroupoidFunction :: Semigroupoid Function where
 
 class Category p where
   id :: forall a. p a a
+infixr 0 id as $
 
 instance categoryFunction :: Category Function where
   id a = a

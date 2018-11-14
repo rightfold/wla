@@ -34,7 +34,7 @@ module Data.Functor
   ) where
 
 import Control.Semigroupoid ((<<))
-import Data.Either (type (+))
+import Data.Either (type (+), Either (..))
 import Data.Unit (Unit, unit)
 
 --------------------------------------------------------------------------------
@@ -50,6 +50,10 @@ infixl 4 map as <$>
 
 instance functorFunction :: Functor (Function i) where
   map = (<<)
+
+instance functorEither :: Functor (Either a) where
+  map _ (Left a)  = Left a
+  map f (Right a) = Right (f a)
 
 -- | Map morphism to terminal object.
 void :: forall f a. Functor f => f a -> f Unit
